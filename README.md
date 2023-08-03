@@ -1,3 +1,3 @@
 # AssassinsCreedTurkey
 
-Merhaba  burada assassins creed türiye oyununu geliştiriyorum
+Assassins Creed Turkey
