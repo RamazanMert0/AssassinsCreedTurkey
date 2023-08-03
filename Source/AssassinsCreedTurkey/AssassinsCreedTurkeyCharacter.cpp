@@ -68,15 +68,25 @@ void AAssassinsCreedTurkeyCharacter::SetupPlayerInputComponent(class UInputCompo
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AAssassinsCreedTurkeyCharacter::Run);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AAssassinsCreedTurkeyCharacter::Walk);
 }
+
+void AAssassinsCreedTurkeyCharacter::TakeDamage_Implementation(float Damage, AActor* DamagetActor, const class UDamageType* DamageType, class AController* InstigateBy, AActor* DamageCauses)
+{
+	Hearth -= Damage;
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Hearth: %f"), Hearth));
+}
 void AAssassinsCreedTurkeyCharacter::Run()
 {
-		GetCharacterMovement()->MaxWalkSpeed = 600;
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Run"));
+	GetCharacterMovement()->MaxWalkSpeed = 600;
 }
 void AAssassinsCreedTurkeyCharacter::Walk()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 200;
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Walk"));
+}
+void AAssassinsCreedTurkeyCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	Trace();
 }
 void AAssassinsCreedTurkeyCharacter::Trace()
 {
@@ -86,6 +96,15 @@ void AAssassinsCreedTurkeyCharacter::Trace()
 	Param.AddIgnoredActor(this);
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartTraceLine, EndTraceLine, ECollisionChannel::ECC_Camera, Param);
 	DrawDebugLine(GetWorld(), StartTraceLine, EndTraceLine, FColor::Red);
+	if (HitResult.GetActor())
+	{
+		FString Actor = HitResult.GetActor()->GetName();
+		float ActorDis = HitResult.Distance;
+		if (Actor == "AI_2" && ActorDis <= 50)
+		{
+			GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Green, TEXT("Kilicini Cek Bire"));
+		}
+	}
 }
 
 void AAssassinsCreedTurkeyCharacter::TurnAtRate(float Rate)

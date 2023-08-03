@@ -49,10 +49,15 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
+	virtual void Tick(float DeltaSeconds) override;
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Damage")
+		void TakeDamage(float Damage, AActor* DamagetActor, const class UDamageType* DamageType, class AController* InstigateBy, AActor* DamageCauses);
 
 	void Run();
 	void Walk();
@@ -68,5 +73,8 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Hearth")
+	float Hearth = 100.f;
 };
 
