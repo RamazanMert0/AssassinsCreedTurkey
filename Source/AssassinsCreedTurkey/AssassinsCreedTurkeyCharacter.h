@@ -56,6 +56,12 @@ protected:
 
 	void Run();
 	void Walk();
+	void Trace();
+
+	FHitResult HitResult;
+
+	UPROPERTY(EditDefaultsOnly)
+	float TraceRadius;
 
 public:
 	/** Returns CameraBoom subobject **/

@@ -7,6 +7,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "DrawDebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -76,6 +77,15 @@ void AAssassinsCreedTurkeyCharacter::Walk()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 200;
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Walk"));
+}
+void AAssassinsCreedTurkeyCharacter::Trace()
+{
+	FVector StartTraceLine = GetActorLocation();
+	FVector EndTraceLine = GetActorForwardVector() * TraceRadius + StartTraceLine;
+	FCollisionQueryParams Param;
+	Param.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartTraceLine, EndTraceLine, ECollisionChannel::ECC_Camera, Param);
+	DrawDebugLine(GetWorld(), StartTraceLine, EndTraceLine, FColor::Red);
 }
 
 void AAssassinsCreedTurkeyCharacter::TurnAtRate(float Rate)
