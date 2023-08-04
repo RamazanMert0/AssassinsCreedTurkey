@@ -76,5 +76,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Hearth")
 	float Hearth = 100.f;
+
+	bool bTakeSword;
 };
 
