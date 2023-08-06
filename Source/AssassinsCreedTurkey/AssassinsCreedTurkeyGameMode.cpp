@@ -2,6 +2,7 @@
 
 #include "AssassinsCreedTurkeyGameMode.h"
 #include "AssassinsCreedTurkeyCharacter.h"
+#include "Character_PC.h"
 #include "UObject/ConstructorHelpers.h"
 
 AAssassinsCreedTurkeyGameMode::AAssassinsCreedTurkeyGameMode()

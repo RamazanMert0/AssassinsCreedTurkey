@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Animation/AnimSequence.h"
+#include "Character_PC.h"
 #include "AssassinsCreedTurkeyCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -61,7 +61,7 @@ protected:
 	float TraceRadius;
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Animation")
 		UAnimationAsset* Animation;
-
+	virtual void BeginPlay() override;
 public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
@@ -72,6 +72,6 @@ public:
 	bool bTakeSword;
 	bool bAttack = true;
 
-	UPROPERTY(EditDefaultsOnly)
-		TArray<UAnimMontage*> Anim;
+	UFUNCTION(BlueprintCallable)
+	void TakeDamage(float Damage);
 };

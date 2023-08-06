@@ -10,10 +10,6 @@ UCLASS(minimalapi)
 class AAssassinsCreedTurkeyGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-
 public:
 	AAssassinsCreedTurkeyGameMode();
 };
-
-
-

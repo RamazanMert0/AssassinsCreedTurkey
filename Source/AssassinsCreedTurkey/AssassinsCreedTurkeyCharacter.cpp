@@ -5,10 +5,12 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "Character_PC.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "Blueprint/UserWidget.h"
 #include "GameFramework/SpringArmComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -89,6 +91,11 @@ void AAssassinsCreedTurkeyCharacter::Attack()
 			GetWorldTimerManager().SetTimer(Handle, this, &AAssassinsCreedTurkeyCharacter::StopAttack, 1.f);
 			bAttack = false;
 			GetCharacterMovement()->DisableMovement();
+			APlayerController* PC = GetController<APlayerController>();
+			if (PC)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("Var :))"));
+			}
 		}
 	}
 }
@@ -99,6 +106,24 @@ void AAssassinsCreedTurkeyCharacter::StopAttack()
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	bAttack = true;
 }
+
+void AAssassinsCreedTurkeyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void AAssassinsCreedTurkeyCharacter::TakeDamage(float Damage)
+{
+	Hearth -= Damage;
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Damage: %s"), Damage));
+	if (Hearth <= 0)
+	{
+		FName CN = "Ragdoll";
+		GetMesh()->SetCollisionProfileName(CN);
+		GetMesh()->SetSimulatePhysics(true);
+	}
+}
+
 void AAssassinsCreedTurkeyCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
