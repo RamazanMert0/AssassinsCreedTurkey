@@ -7,6 +7,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -67,12 +68,7 @@ void AAssassinsCreedTurkeyCharacter::SetupPlayerInputComponent(class UInputCompo
 
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AAssassinsCreedTurkeyCharacter::Run);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AAssassinsCreedTurkeyCharacter::Walk);
-}
-
-void AAssassinsCreedTurkeyCharacter::TakeDamage_Implementation(float Damage, AActor* DamagetActor, const class UDamageType* DamageType, class AController* InstigateBy, AActor* DamageCauses)
-{
-	Hearth -= Damage;
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Hearth: %f"), Hearth));
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AAssassinsCreedTurkeyCharacter::Attack);
 }
 void AAssassinsCreedTurkeyCharacter::Run()
 {
@@ -81,6 +77,27 @@ void AAssassinsCreedTurkeyCharacter::Run()
 void AAssassinsCreedTurkeyCharacter::Walk()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 200;
+}
+void AAssassinsCreedTurkeyCharacter::Attack()
+{
+	if (bTakeSword && GetCharacterMovement()->IsFalling() == false)
+	{
+		if (bAttack)
+		{
+			GetMesh()->PlayAnimation(Animation, false);
+			FTimerHandle Handle;
+			GetWorldTimerManager().SetTimer(Handle, this, &AAssassinsCreedTurkeyCharacter::StopAttack, 1.f);
+			bAttack = false;
+			GetCharacterMovement()->DisableMovement();
+		}
+	}
+}
+
+void AAssassinsCreedTurkeyCharacter::StopAttack()
+{
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	bAttack = true;
 }
 void AAssassinsCreedTurkeyCharacter::Tick(float DeltaSeconds)
 {
