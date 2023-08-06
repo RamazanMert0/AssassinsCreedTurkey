@@ -67,11 +67,11 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Hearth")
-	float Hearth = 100.f;
+	float HearthCpp = 100.f;
 
 	bool bTakeSword;
 	bool bAttack = true;
 
 	UFUNCTION(BlueprintCallable)
-	void TakeDamage(float Damage);
+	void Ragdoll(float TakeDamage);
 };

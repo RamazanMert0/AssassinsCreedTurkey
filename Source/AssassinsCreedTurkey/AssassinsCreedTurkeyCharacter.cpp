@@ -38,7 +38,7 @@ AAssassinsCreedTurkeyCharacter::AAssassinsCreedTurkeyCharacter()
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->SetupAttachment(GetMesh());
 	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
@@ -106,24 +106,22 @@ void AAssassinsCreedTurkeyCharacter::StopAttack()
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	bAttack = true;
 }
-
-void AAssassinsCreedTurkeyCharacter::BeginPlay()
+void AAssassinsCreedTurkeyCharacter::Ragdoll(float TakeDamage)
 {
-	Super::BeginPlay();
-}
-
-void AAssassinsCreedTurkeyCharacter::TakeDamage(float Damage)
-{
-	Hearth -= Damage;
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Damage: %s"), Damage));
-	if (Hearth <= 0)
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Aldýgým Hasar: %f"), TakeDamage));
+	if (TakeDamage <= 0)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("Can Bitti"));
 		FName CN = "Ragdoll";
 		GetMesh()->SetCollisionProfileName(CN);
 		GetMesh()->SetSimulatePhysics(true);
 	}
 }
 
+void AAssassinsCreedTurkeyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+}
 void AAssassinsCreedTurkeyCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -163,29 +161,35 @@ void AAssassinsCreedTurkeyCharacter::LookUpAtRate(float Rate)
 
 void AAssassinsCreedTurkeyCharacter::MoveForward(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f))
+	if (HearthCpp > 0)
 	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		if ((Controller != nullptr) && (Value != 0.0f))
+		{
+			// find out which way is forward
+			const FRotator Rotation = Controller->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
+			// get forward vector
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			AddMovementInput(Direction, Value);
+		}
 	}
 }
 
 void AAssassinsCreedTurkeyCharacter::MoveRight(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if (HearthCpp > 0)
 	{
-		// find out which way is right
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
-		// get right vector 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		// add movement in that direction
-		AddMovementInput(Direction, Value);
+		if ((Controller != nullptr) && (Value != 0.0f))
+		{
+			// find out which way is right
+			const FRotator Rotation = Controller->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+			// get right vector 
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			// add movement in that direction
+			AddMovementInput(Direction, Value);
+		}
 	}
 }
